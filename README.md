@@ -4,9 +4,9 @@
 
 > Changed content is Visual Studio 2015 is not required.
 > 
-> But you can also use Visual Studio 2015 for simpler cmpilation
+> But you can also use Visual Studio 2015 for simpler compilation
 > 
-> In the way you like: D
+> In the way you like :D
 
 **<u>Don't use it to do illegal things. The code is not confused&encrypted</u>**
 
