@@ -32,7 +32,7 @@ The program is compiled using AppVeyor test, so you don't have to worry about th
 >
 > 按你喜欢的方式来 :D
 
-**<u>不要用它做违法的事情。代码没有混淆或加密。!</u>**
+**<u>不要用它做违法的事情。代码没有混淆或加密!</u>**
 
 编译指令（不需要Visual Studio 2015）：
 
