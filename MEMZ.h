@@ -356,15 +356,15 @@ void infCursor(){
 
 void RandIcon(){
 	int cx = GetSystemMetrics(SM_CXFULLSCREEN);
-    int cy = GetSystemMetrics(SM_CYFULLSCREEN);
+	int cy = GetSystemMetrics(SM_CYFULLSCREEN);
 	HWND hwnd = GetDesktopWindow();
-    HDC hdc = GetWindowDC(hwnd);
-    POINT point;
+	HDC hdc = GetWindowDC(hwnd);
+	POINT point;
 	DrawIcon(hdc,random(0,cx),random(0,cy),LoadIcon(NULL,IDI_QUESTION));
-    DrawIcon(hdc,random(0,cx),random(0,cy),LoadIcon(NULL,IDI_WARNING));
-    DrawIcon(hdc,random(0,cx),random(0,cy),LoadIcon(NULL,IDI_ERROR));
-    DrawIcon(hdc,random(0,cx),random(0,cy),LoadIcon(NULL,IDI_INFORMATION));
-    DrawIcon(hdc,random(0,cx),random(0,cy),LoadIcon(NULL,IDI_WINLOGO));
+	DrawIcon(hdc,random(0,cx),random(0,cy),LoadIcon(NULL,IDI_WARNING));
+	DrawIcon(hdc,random(0,cx),random(0,cy),LoadIcon(NULL,IDI_ERROR));
+	DrawIcon(hdc,random(0,cx),random(0,cy),LoadIcon(NULL,IDI_INFORMATION));
+	DrawIcon(hdc,random(0,cx),random(0,cy),LoadIcon(NULL,IDI_WINLOGO));
 }
 void infIcon(){
 	for(;;){
