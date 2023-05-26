@@ -13,6 +13,7 @@
 > In the way you like :D
 
 **<u>Don't use it to do illegal things. The code is not confused&encrypted!</u>**
+**Modifying MBR function not enabled by default**
 
 Compile directives (Visual Studio 2015 is not required):
 
@@ -33,6 +34,7 @@ The program is compiled using AppVeyor test, so you don't have to worry about th
 > 按你喜欢的方式来 :D
 
 **<u>不要用它做违法的事情。代码没有混淆或加密!</u>**
+**修改MBR功能未默认开启!**
 
 编译指令（不需要Visual Studio 2015）：
 
