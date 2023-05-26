@@ -16,7 +16,7 @@
 
 Compile directives (Visual Studio 2015 is not required):
 
-`g++ main.cpp -lgdi32 -o MEMZ.exe -std=c++11`
+`g++ main.cpp -lgdi32 -o MEMZ.exe -std=c++11 -lwinmm`
 
 <br/>
 
@@ -28,7 +28,7 @@ The program is compiled using AppVeyor test, so you don't have to worry about th
 
 > 更改的内容是不需要Visual Studio 2015。
 >
-> 但您也可以使用Visual Studio 2015进行更简单的编译
+> 但您也可以使用Visual Studio 2015进行更简单<s>(复杂)</s>的编译
 >
 > 按你喜欢的方式来 :D
 
@@ -36,8 +36,8 @@ The program is compiled using AppVeyor test, so you don't have to worry about th
 
 编译指令（不需要Visual Studio 2015）：
 
-`g++ main.cpp -lgdi32 -o MEMZ.exe -std=c++11`
+`g++ main.cpp -lgdi32 -o MEMZ.exe -std=c++11 -lwinmm`
 
 <br/>
 
-该程序是使用AppVeyor进行编译测试的，因此您不必担心下载后却编译失败。
+该程序是使用AppVeyor进行编译测试的，因此您不必担心下载后编译失败。
