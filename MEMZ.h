@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <stdlib.h>
 #include <time.h>
-#include <vector.h>
+#include <vector>
 #include <cstdio>
 #include <string>
 #include <pthread.h>
