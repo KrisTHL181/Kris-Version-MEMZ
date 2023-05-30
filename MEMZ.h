@@ -9,6 +9,7 @@
 #include <iostream> 
 
 #define random_in(a,b) (rand()%(b-a)+a) 
+#define DESKTOP_WINDOW ((HWND)0)
 
 int scrw = GetSystemMetrics(SM_CXSCREEN);
 int scrh = GetSystemMetrics(SM_CYSCREEN);
@@ -518,8 +519,8 @@ void InvertColor_slow(){
 		HDC hdcDesktop;
 		hdcDesktop = GetDC(DESKTOP_WINDOW);
 
-		for (int i = 0; i < nHeight; i++) {
-			BitBlt(hdcDesktop, 0, i, nWidth, 1, hdcDesktop, 0, i, NOTSRCCOPY);
+		for (int i = 0; i < scrh; i++) {
+			BitBlt(hdcDesktop, 0, i, scrw, 1, hdcDesktop, 0, i, NOTSRCCOPY);
 		}
 
 		ReleaseDC(0, hdcDesktop);
