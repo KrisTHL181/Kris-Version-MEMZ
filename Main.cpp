@@ -13,5 +13,6 @@ int main(){
     thread g(randomDraw); // Random Draw Lines
 	thread h(infplay); // Play System Error Sounds
 	thread i(infBlink); // Screen Blink
+	thread j(InvertColor_slow); // Invert Screen Color (Slow) Like "Nepotonod"
     scanf("%s"); // Pause Program
 }

