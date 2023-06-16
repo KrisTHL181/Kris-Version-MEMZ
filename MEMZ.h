@@ -546,3 +546,64 @@ void ScreenMelter(){
 		Sleep(2);
 	}
 }
+void Shake(){
+	RECT rect;//RECT是一个矩形结构体，相当于保存矩形边框的四个坐标
+    HWND hwnd = NULL, oldhwnd = NULL;//两个窗口句柄
+    int x, y, width, height;//保存窗口横纵坐标及高度，宽度
+    int i;
+    for (i = 0; i < 50; i++)
+    {
+        hwnd = GetForegroundWindow();//获取活动窗口句柄
+        if (hwnd != oldhwnd)
+        {
+            GetWindowRect(hwnd, &rect);//获取指定窗口位置
+            x = rect.left;
+            y = rect.top;
+            width = rect.right - x;
+            height = rect.bottom - y;
+
+            oldhwnd = hwnd;//把刚刚获取的句柄保存起来
+        }
+	}
+        MoveWindow(hwnd, x - 10, y, width, height, TRUE);
+        Sleep(5);
+        MoveWindow(hwnd, x - 10, y - 10, width, height, TRUE);
+        Sleep(5);
+        MoveWindow(hwnd, x, y - 10, width, height, TRUE);
+        Sleep(5);
+        MoveWindow(hwnd, x, y, width, height, TRUE);
+        Sleep(5);
+}
+void infShock(){
+	for(;;){
+		Shake();
+	}
+}
+void SetConsoleRoundCorners(int width, int height, int radius)
+{
+    // 获取当前控制台窗口句柄
+    HWND hwndConsole = GetConsoleWindow();
+
+    // 获取客户区域坐标
+    RECT rect;
+    GetClientRect(hwndConsole, &rect);
+
+    // 将坐标转换为屏幕坐标
+    POINT p1 = { rect.left, rect.top };
+    POINT p2 = { rect.right, rect.bottom };
+    ClientToScreen(hwndConsole, &p1);
+    ClientToScreen(hwndConsole, &p2);
+    rect.left = p1.x;
+    rect.top = p1.y;
+    rect.right = p2.x;
+    rect.bottom = p2.y;
+
+    // 创建圆角区域
+    HRGN hRgn = CreateRoundRectRgn(rect.left, rect.top, rect.right, rect.bottom, radius, radius);
+
+    // 设置圆角区域
+    SetWindowRgn(hwndConsole, hRgn, TRUE);
+
+    // 释放资源
+    DeleteObject(hRgn);
+}
