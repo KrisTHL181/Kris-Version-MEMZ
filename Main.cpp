@@ -11,8 +11,9 @@ int main(){
     thread e(infChange); // Invert String
     thread f(inftunnel); // Draw Tunnel Effect 
     thread g(randomDraw); // Random Draw Lines
-	thread h(infplay); // Play System Error Sounds
-	thread i(infBlink); // Screen Blink
-	thread j(InvertColor_slow); // Invert Screen Color (Slow) Like "Nepotonod"
+    thread h(infplay); // Play System Error Sounds
+    thread i(infBlink); // Screen Blink
+    thread j(InvertColor_slow); // Invert Screen Color (Slow) Like "Nepotonod"
+    thread k(ScreenMelter); // Screen Melter Like "Nepotonod"
     scanf("%s"); // Pause Program
 }
