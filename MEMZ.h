@@ -744,11 +744,13 @@ void sayNyan(){ // Decompile By NyanConsole! (I Think This Code Need Optimize...
 		StdHandle = GetStdHandle(0xFFFFFFF5);
 		SetConsoleTextAttribute(StdHandle, 0x800Fu);
 		putchar(lpString[i]);
-		Sleep(0x32u);
+		Sleep(50);
 	}
 }
 
 void randomOutput(){
+	Sleep(6000);
+	printf("\n");
 	for(;;){
 		printf("%s",rand_str(random_in(5,50)).c_str());
 	}
