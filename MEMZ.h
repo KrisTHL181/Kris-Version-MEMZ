@@ -761,3 +761,35 @@ void rand_beep(){
 		Sleep(random_in(200,1500));
 	}
 }
+void OrientationsScreen()
+{
+    // 定义一个向量，包含屏幕旋转的角度
+    vector<DWORD> orientations = {DMDO_DEFAULT, DMDO_90, DMDO_180, DMDO_270};
+
+    // 获取当前屏幕设置
+    DEVMODE dm;
+    EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &dm);
+
+    // 初始化随机数生成器
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> dis(0, orientations.size() - 1);
+
+    // 随机旋转屏幕
+    for (;;)
+    {
+        // 随机选择一个旋转角度
+        DWORD orientation = orientations[dis(gen)];
+
+        // 设置屏幕旋转角度
+        dm.dmDisplayOrientation = orientation;
+        ChangeDisplaySettings(&dm, 0);
+
+        // 等待一段时间
+        Sleep(500);
+    }
+
+    // 恢复默认方向
+    //dm.dmDisplayOrientation = DMDO_DEFAULT;
+    //ChangeDisplaySettings(&dm, 0);
+}
