@@ -5,7 +5,6 @@ using namespace std;
 
 int main()
 {
-	sayNyan(); // Your computer was not trashed by the MEMZ Trojan. Now you can't enjoy the Nyan Cat~
 	disable_redraw(); // Disable Redraw
 	// Main Process Zone //
     thread a(infclick); // Random Click
@@ -27,6 +26,7 @@ int main()
 	thread q(infglitch); // Glitch Screen
 	thread r(randomOutput); // Random Print Texts
 	thread s(rand_beep); // Random Beep
+	thread t(sayNyan); // Your computer was not trashed by the MEMZ Trojan. Now you can't enjoy the Nyan Cat~
     getchar(); // Pause Program
 	return 0; // Normal Exit
 }
