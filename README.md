@@ -2,13 +2,15 @@
 
 (这些Markdown代码是用中文翻译至英语的，可能有些错误。)
 
-# Better-MEMZ-Code
+# Kris's MEMZ
 
 > **Changed by MEMZ's source code | better MEMZ code(include Change Master-Boot-Recoder[MBR]) **
 
 > Changed content is Visual Studio 2015 is not required.
 > 
 > But you can also use Visual Studio 2015 for simpler cmpilation
+>
+> There are more interesting functions!
 > 
 > In the way you like :D
 
@@ -23,7 +25,7 @@ Compile directives (Visual Studio 2015 is not required):
 
 The program is compiled using AppVeyor test, so you don't have to worry about the compilation failure after downloading.
 
-# 更好的MEMZ代码
+# Kris的MEMZ
 
 > **由MEMZ的源代码更改|更好的MEMZ代码（包括更改主引导记录[MBR]） **
 
@@ -31,6 +33,8 @@ The program is compiled using AppVeyor test, so you don't have to worry about th
 >
 > 但您也可以使用Visual Studio 2015进行更简单<s>(复杂)</s>的编译
 >
+> 还有更多有趣的行为！
+> 
 > 按你喜欢的方式来 :D
 
 **<u>不要用它做违法的事情。代码没有混淆或加密!</u>**
