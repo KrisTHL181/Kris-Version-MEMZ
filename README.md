@@ -4,7 +4,7 @@
 
 # Kris's MEMZ
 
-> **Changed by MEMZ's source code | better MEMZ code(include Change Master-Boot-Recoder[MBR]) **
+> **Changed by MEMZ's source code | Kris's MEMZ(include Change Master-Boot-Recoder[MBR]) **
 
 > Changed content is Visual Studio 2015 is not required.
 > 
@@ -27,7 +27,7 @@ The program is compiled using AppVeyor test, so you don't have to worry about th
 
 # Kris的MEMZ
 
-> **由MEMZ的源代码更改|更好的MEMZ代码（包括更改主引导记录[MBR]） **
+> **由MEMZ的源代码更改|Kris的MEMZ（包括更改主引导记录[MBR]） **
 
 > 更改的内容是不需要Visual Studio 2015。
 >
