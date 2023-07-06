@@ -8,6 +8,7 @@ int main()
 	disable_redraw(); // Disable Redraw
 	StartWarning(); // Warning
 	CreateNote(); // Create Note
+	Sleep(5000); // Wait 5 Secounds...
 	// Main Process Zone //
 	thread a(infclick); // Random Click
 	thread b(infInvColor); // Invert Screen Color
