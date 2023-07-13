@@ -840,8 +840,8 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 
 	DWORD code = ks->vkCode;
 
-    if (code == 13){ // Space
-        printf("Pressed Space, Aborting...\n");
+    if (code == 13){ // Enter
+        printf("Pressed Enter, Aborting...\n");
         ExitProcess(-1); // Exit
     }
 
@@ -850,6 +850,10 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
         ExitProcess(-1); // Exit
     }
 
+    if (code == 32){ // Space
+        printf("Pressed Space, Aborting...\n");
+        ExitProcess(-1); // Exit
+    }
 	//return 1;	// 吃掉消息
 	return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
