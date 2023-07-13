@@ -19,7 +19,7 @@
 
 Compile directives (Visual Studio 2015 is not required):
 
-`g++ main.cpp -lgdi32 -o MEMZ.exe -std=c++11 -lwinmm -Os -ffunction-sections -fdata-sections -Wall -Wextra`
+`g++ main.cpp -lgdi32 -o MEMZ.exe -std=c++11 -lwinmm -Os -ffunction-sections -fdata-sections -static -Wall -Wextra -fexec-charset=GBK -finput-charset=UTF-8`
 
 <br/>
 
@@ -42,7 +42,7 @@ The program is compiled using AppVeyor test, so you don't have to worry about th
 
 编译指令（不需要Visual Studio 2015）：
 
-`g++ main.cpp -lgdi32 -o MEMZ.exe -std=c++11 -lwinmm -Os -ffunction-sections -fdata-sections -Wall -Wextra`
+`g++ main.cpp -lgdi32 -o MEMZ.exe -std=c++11 -lwinmm -Os -ffunction-sections -fdata-sections -static -Wall -Wextra -fexec-charset=GBK -finput-charset=UTF-8`
 
 <br/>
 
