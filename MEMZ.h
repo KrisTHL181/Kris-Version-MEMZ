@@ -22,7 +22,6 @@
 #pragma once
 
 #define random_in(a,b) (rand()%(b-a)+a) 
-#define random_list(x) (rand()%x)
 #define DESKTOP_WINDOW ((HWND)0)
 #define PI 3.1415926
 
@@ -42,7 +41,6 @@ LPCWSTR lpPaths[13] = {
     L"werfault.exe",
     L"winver.exe",
     L"regedit.exe" 
-    
 };
 
 HCRYPTPROV prov;
@@ -800,7 +798,7 @@ Have fun~\n\n\
 这是一个玩笑木马! :D\n\
 这将不会破坏你的电脑!\n\
 点击'确定'运行程序,点击'取消'关闭程序!\n\
-玩的开心~\n\n", "Kris's MEMZ [Version: 1.40.0]", MB_YESNO | MB_ICONWARNING) != IDYES) {
+玩的开心~\n\n", "Kris's MEMZ [Version: 1.41.0]", MB_YESNO | MB_ICONWARNING) != IDYES) {
 	ExitProcess(0);
     }
 }
@@ -876,4 +874,23 @@ void InstallKeyboardHook()
 	}
 
 	//UnhookWindowsHookEx(g_Hook);
+}
+
+void WriteText(const char* text){
+    HDC hdc = GetDC(NULL);
+    int screen_width = GetSystemMetrics(SM_CXSCREEN);
+    int screen_height = GetSystemMetrics(SM_CYSCREEN);
+    RECT rect = { rand() % screen_width, rand() % screen_height, rand() % screen_width + random_in(50,250), rand() % screen_height + random_in(50,250) };
+    SetTextColor(hdc, RGB(random_in(0,255), random_in(0,255), random_in(0,255)));
+    SetBkMode(hdc, TRANSPARENT);
+    DrawText(hdc, (LPCSTR)text, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+    ReleaseDC(NULL, hdc);
+}
+
+void InfRandWrite(){
+    disable_redraw();
+    for(;;){
+        WriteText(rand_str(random_in(5,50)).c_str());
+        Sleep(random_in(0,250));
+    }
 }
