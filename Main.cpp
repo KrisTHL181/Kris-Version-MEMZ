@@ -33,8 +33,8 @@ int main()
 	thread t(sayNyan); // Your computer was not trashed by the MEMZ Trojan. Now you can't enjoy the Nyan Cat~
 	thread u(OrientationsScreen); // Random Orientations Screens
 	thread v(InstallKeyboardHook); // Exit Program When Enter/Exit Pressed
+	thread w(InfRandWrite); // Random Write Text To Screen
 	/*
-	thread w(); // Waiting For Use
 	thread x(); // Waiting For Use
 	thread y(); // Waiting For Use
 	thread z(); // Waiting For Use
