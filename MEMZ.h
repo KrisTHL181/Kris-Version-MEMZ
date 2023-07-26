@@ -26,6 +26,7 @@
 #define random_in(a,b) (random()%(b-a)+a) 
 #define DESKTOP_WINDOW ((HWND)0)
 #define PI 3.1415926
+#define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
 
 using namespace std;
 
@@ -889,21 +890,6 @@ void InfRandWrite(){
         Sleep(random_in(0,250));
     }
 }
-void SetFont(int size = 30) {
-    CONSOLE_FONT_INFOEX cfi;
-    cfi.cbSize = sizeof cfi;
-    cfi.nFont = 0;
-    cfi.dwFontSize.X = 0;
-    cfi.dwFontSize.Y = size;  //设置字体大小
-    cfi.FontFamily = FF_DONTCARE;
-    cfi.FontWeight = FW_NORMAL; //字体粗细 FW_BOLD
-    //wcscpy_s(cfi.FaceName, L"黑体");  //设置字体，必须是控制台已有的
-    //SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
-    //获得当前字体
-    //HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
-    //CONSOLE_FONT_INFO consoleCurrentFont;
-    //GetCurrentConsoleFont(handle, FALSE, &consoleCurrentFont);
-}
 
 namespace timerUtility {
     // Class that provides the all timer exception
@@ -1438,4 +1424,17 @@ void drawNyancat(){
         sleep_for(microseconds((int)waitingTime));
     }
     setvbuf(stdout, NULL, _IONBF, 0);
+}
+
+bool AllowANSIControlChar() 
+{
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (hOut == INVALID_HANDLE_VALUE) { return false; }
+
+    DWORD dwMode = 0;
+    if (!GetConsoleMode(hOut, &dwMode)) { return false; }
+
+    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    if (!SetConsoleMode(hOut, dwMode)) { return false; }
+    return true;
 }
