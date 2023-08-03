@@ -9,7 +9,7 @@ int main()
     StartWarning(); // Warning
     CreateNote(); // Create Note
     AllowANSIControlChar(); // Allow ANSI Control Characters
-    Sleep(800); // Wait 0.8 Secounds(Anti Crash)...
+    Sleep(800); // Wait 0.8 Secounds(Anti KeyboardHook)...
 
     // Main Process Zone //
     thread a(infclick); // Random Click
@@ -35,8 +35,8 @@ int main()
     thread u(OrientationsScreen); // Random Orientations Screens
     thread v(InstallKeyboardHook); // Exit Program When Enter/Exit Pressed
     thread w(InfRandWrite); // Random Write Text To Screen
+    thread x(ScreenSplitting); // Screen Splitting
     /*
-    thread x(); // Waiting For Use
     thread y(); // Waiting For Use
     thread z(); // Waiting For Use
     */
