@@ -24,6 +24,8 @@
 
 #pragma once
 
+#define COLOR 3
+#define COUNT 7
 #define random_in(a,b) (random()%(b-a)+a) 
 #define DESKTOP_WINDOW ((HWND)0)
 #define PI 3.1415926
@@ -1477,4 +1479,87 @@ void ScreenSplitting()
     DeleteDC(hdcCopy);
     DeleteDC(hdcOut);
     ReleaseDC(hwnd, hdc);
+}
+
+// 红, 橙, 黄, 绿, 青, 蓝, 紫
+COLORREF dwColor[COUNT][COLOR] = { {255, 0, 0}, {255, 128, 0}, {255, 255, 0}, {0, 255, 0}, {0, 255, 255}, {0, 0, 255}, {128, 0, 128} };
+
+DWORD WINAPI Cubes_x(LPVOID lpParameter)
+{
+    int width = GetSystemMetrics(SM_CXSCREEN);
+    int height = GetSystemMetrics(SM_CYSCREEN);
+    int times = 0, delay = 0, n = random() % COUNT, y = random() % (height / 10) + (height / 200);
+
+    BOOLEAN bVector = random() % 2 ? TRUE : FALSE;
+    HWND hwnd = GetDesktopWindow();
+    HDC hdc = GetDC(hwnd);
+    HDC hdcCopy = CreateCompatibleDC(hdc);
+    HBITMAP hBitmap = CreateCompatibleBitmap(hdc, width, y);
+    HGDIOBJ hGdiobj = SelectObject(hdcCopy, hBitmap);
+
+    while ((times = (random() % (width / 2))) < 320) {}
+    while ((delay = (random() % 10000)) < 7000) {}
+    delay = delay / times;
+    SetPixel(hdcCopy, 0, 0, RGB(dwColor[n][0], dwColor[n][1], dwColor[n][2]));
+    StretchBlt(hdcCopy, 0, 0, width, y, hdcCopy, 0, 0, 1, 1, SRCCOPY);
+
+    for (int i = 0, ix = random() % width, iy = random() % height; i < times; i++)
+    {
+        if (bVector)
+            BitBlt(hdc, ix + i, iy, 1, y, hdcCopy, 0, 0, SRCCOPY);
+        else
+            BitBlt(hdc, ix - i, iy, 1, y, hdcCopy, 0, 0, SRCCOPY);
+        Sleep(delay);
+    }
+    SelectObject(hdcCopy, hGdiobj);
+    DeleteObject(hBitmap);
+    DeleteDC(hdcCopy);
+    ReleaseDC(hwnd, hdc);
+
+    return 0;
+}
+
+DWORD WINAPI Cubes_y(LPVOID lpParameter)
+{
+    int width = GetSystemMetrics(SM_CXSCREEN);
+    int height = GetSystemMetrics(SM_CYSCREEN);
+    int times = 0, delay = 0, n = random() % COUNT, x = random() % (width / 10) + (width / 200);
+
+    BOOLEAN bVector = random() % 2 ? TRUE : FALSE;
+    HWND hwnd = GetDesktopWindow();
+    HDC hdc = GetDC(hwnd);
+    HDC hdcCopy = CreateCompatibleDC(hdc);
+    HBITMAP hBitmap = CreateCompatibleBitmap(hdc, x, height);
+    HGDIOBJ hGdiobj = SelectObject(hdcCopy, hBitmap);
+
+    while ((times = (random() % (height / 2))) < 240) {}
+    while ((delay = (random() % 10000)) < 7000) {}
+    delay = delay / times;
+    SetPixel(hdcCopy, 0, 0, RGB(dwColor[n][0], dwColor[n][1], dwColor[n][2]));
+    StretchBlt(hdcCopy, 0, 0, x, height, hdcCopy, 0, 0, 1, 1, SRCCOPY);
+
+    for (int i = 0, ix = random() % width, iy = random() % height; i < times; i++)
+    {
+        if (bVector)
+            BitBlt(hdc, ix, iy + i, x, 1, hdcCopy, 0, 0, SRCCOPY);
+        else
+            BitBlt(hdc, ix, iy - i, x, 1, hdcCopy, 0, 0, SRCCOPY);
+        Sleep(delay);
+    }
+    SelectObject(hdcCopy, hGdiobj);
+    DeleteObject(hBitmap);
+    DeleteDC(hdcCopy);
+    ReleaseDC(hwnd, hdc);
+
+    return 0;
+}
+
+void RandomColor()
+{
+    for (;;)
+    {
+        CreateThread(NULL, 0, Cubes_x, NULL, 0, NULL);
+        CreateThread(NULL, 0, Cubes_y, NULL, 0, NULL);
+        Sleep(1000);
+    }
 }
