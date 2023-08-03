@@ -1,3 +1,4 @@
+
 #include <windows.h>
 #include <shellapi.h>
 #include <werapi.h> 
@@ -1436,5 +1437,44 @@ bool AllowANSIControlChar()
 
     dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
     if (!SetConsoleMode(hOut, dwMode)) { return false; }
+
     return true;
+}
+
+void ScreenSplitting()
+{
+    int PARAM = 100;
+    HWND hwnd;
+    HDC hdc, hdcCopy, hdcOut;
+    HBITMAP hBitmapCopy, hBitmapOut;
+    
+    for (int width = 0, height = 0;;)
+    {
+        hwnd = GetDesktopWindow();
+        hdc = GetDC(hwnd);
+        hdcCopy = CreateCompatibleDC(hdc);
+        hdcOut = CreateCompatibleDC(hdc);
+        
+        width = GetSystemMetrics(SM_CXSCREEN);
+        height = GetSystemMetrics(SM_CYSCREEN);
+        hBitmapCopy = CreateCompatibleBitmap(hdc, width, height);
+        hBitmapOut = CreateCompatibleBitmap(hdc, width, height);
+        SelectObject(hdcCopy, hBitmapCopy);
+        SelectObject(hdcOut, hBitmapOut);
+        
+        BitBlt(hdcCopy, 0, 0, width, height, hdc, 0, 0, SRCCOPY);
+        
+        BitBlt(hdcOut, 0, 0, width / 2 - width / PARAM, height / 2 - height / PARAM, hdcCopy, width / PARAM, height / PARAM, SRCCOPY);
+        BitBlt(hdcOut, 0, height / 2 + height / PARAM, width / 2 - width / PARAM, height / 2 - height / PARAM, hdcCopy, width / PARAM, height / 2, SRCCOPY);
+        BitBlt(hdcOut, width / 2 + width / PARAM, 0, width / 2 - width / PARAM, height / 2 - height / PARAM, hdcCopy, width / 2, height / PARAM, SRCCOPY);
+        BitBlt(hdcOut, width / 2 + width / PARAM, height / 2 + height / PARAM, width / 2 - width / PARAM, height / 2 - height / PARAM, hdcCopy, width / 2, height / 2, SRCCOPY);
+        
+        BitBlt(hdc, 0, 0, width, height, hdcOut, 0, 0, SRCCOPY);
+        Sleep(1000);
+    }
+    DeleteObject(hBitmapCopy);
+    DeleteObject(hBitmapOut);
+    DeleteDC(hdcCopy);
+    DeleteDC(hdcOut);
+    ReleaseDC(hwnd, hdc);
 }
