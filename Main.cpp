@@ -37,9 +37,7 @@ int main()
     thread w(InfRandWrite); // Random Write Text To Screen
     thread x(ScreenSplitting); // Screen Splitting
     thread y(RandomColor); // Random Show Color Line
-    /*
-    thread z(); // Waiting For Use
-    */
+    thread z(GlitchLine); // Screen Glitch (Line Mode)
     getchar(); // Pause Program
     return 0; // Normal Exit
 }
